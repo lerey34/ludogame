@@ -1,0 +1,42 @@
+#main {
+  width: 1000px;
+  float: left;
+}
+.pawns {
+  background-image: url("/img/pawn.svg");
+  width: 32.48px;
+  height: 32.48px;
+  border-radius: 20px;
+  position: absolute;
+}
+#board {
+  background: url(/img/board.png) no-repeat;
+  background-size: cover;
+  width: 650px;
+  height: 650px;
+  float: left;
+  margin-top: 0px;
+  margin-left: 0px;
+}
+#uselesstext1 {
+  float: left;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+footer {
+  font-size: larger;
+  color: darkred;
+}
+
+.p1 {
+  color: red;
+}
+.p2 {
+  color: blue;
+}
+.p3 {
+  color: yellow;
+}
+.p4 {
+  color: green;
+}
