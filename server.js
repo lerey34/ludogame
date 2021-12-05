@@ -20,6 +20,8 @@ mongoose.connect(url).catch((err) => {
   console.log(err);
 });
 
+const port = process.env.PORT || 8080;
+
 const connections = [null, null, null, null];
 
 var idRoom = 0;
@@ -880,6 +882,6 @@ app.post("/login", (req, res) => {
   });
 });
 
-server.listen(8080, () => {
-  console.log("server on 8080");
+server.listen(port, () => {
+  console.log("server on " + port);
 });
