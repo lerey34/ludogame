@@ -23,6 +23,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const player2 = document.getElementById("player2");
   const player3 = document.getElementById("player3");
   const player4 = document.getElementById("player4");
+  const diceAudio = document.getElementById("dice_audio");
+  const killAudio = document.getElementById("kill_audio");
+  const outAudio = document.getElementById("out_audio");
+  const moveAudio = document.getElementById("move_audio");
+  const winAudio = document.getElementById("win_audio");
+  const winnerAudio = document.getElementById("winner_audio");
+  const leave = document.getElementById("back");
 
   var connections = [null, null, null, null];
   var i = 0;
@@ -42,24 +49,26 @@ document.addEventListener("DOMContentLoaded", () => {
   socket.on("connect", () => {
     var room = roomId.innerText;
     socket.emit("room", room);
+
+    socket.on("disconnect", () => {
+      //eventFire(leave, "click");
+      socket.emit("leave", roomid);
+    });
   });
 
   socket.on("id", (id) => {
-    console.log("p0 : " + id[0]);
-    console.log("p1 : " + id[1]);
-    console.log("p2 : " + id[2]);
-    console.log("p3 : " + id[3]);
     connections[0] = id[0];
     connections[1] = id[1];
     connections[2] = id[2];
     connections[3] = id[3];
-    console.log("c0 : " + connections[0]);
-    console.log("c1 : " + connections[1]);
-    console.log("c2 : " + connections[2]);
-    console.log("c3 : " + connections[3]);
+    player1.innerHTML = "Joueur 1 : " + connections[0];
+    player2.innerHTML = "Joueur 2 : " + connections[1];
+    player3.innerHTML = "Joueur 3 : " + connections[2];
+    player4.innerHTML = "Joueur 4 : " + connections[3];
   });
 
   socket.on("randomNum", (nums) => {
+    diceAudio.play();
     num = nums;
     console.log(num);
     if (!clicked) {
@@ -73,154 +82,64 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  socket.on("move", (color, num) => {
-    console.log(color, num);
-    randomMove(color, num);
-  });
-
   socket.on("step", (Color, paw) => {
-    NumOfPaw = paw;
-    currcolor = Color;
-    currpawn = currcolor + "pawn" + NumOfPaw;
-    currPos = positions[currpawn];
-    if (num + currPos > 43) {
-      Stuck();
-    } else {
-      if (clicked) {
-        var position = currPos;
-        console.log("move1");
-        if (text.innerText == currcolor) {
-          console.log("move2");
-          if (onboard[currpawn] === 1 || num === 6) {
-            console.log("move3");
-            if (onboard[currpawn] === 0) {
-              var doc = document.getElementById(currpawn);
-              var curr = Number(doc.style.left.replace(/[a-z]/g, ""));
-              console.log("move4");
-              switch (Color) {
-                case "red":
-                  doc.style.left = 365.4 + "px";
-                  doc.style.top = 81.2 + "px";
-                  break;
-
-                case "yellow":
-                  doc.style.left = 251.72 + "px";
-                  doc.style.top = 535.92 + "px";
-                  break;
-
-                case "blue":
-                  doc.style.left = 535.92 + "px";
-                  doc.style.top = 365.4 + "px";
-                  break;
-
-                case "green":
-                  doc.style.left = 81.2 + "px";
-                  doc.style.top = 251.72 + "px";
-                  break;
-              }
-              onboard[currpawn] = 1;
-            } else {
-              console.log("move5");
-              switch (Color) {
-                case "red":
-                  for (i = currPos; i < position + num; i++) {
-                    stepsRed[i]();
-                  }
-                  break;
-
-                case "yellow":
-                  for (i = currPos; i < position + num; i++) {
-                    stepsYellow[i]();
-                  }
-                  break;
-
-                case "blue":
-                  for (i = currPos; i < position + num; i++) {
-                    stepsBlue[i]();
-                  }
-                  break;
-
-                case "green":
-                  for (i = currPos; i < position + num; i++) {
-                    stepsGreen[i]();
-                  }
-                  break;
-              }
-              positions[currpawn] = currPos;
-              var victim = HaveHover();
-              if (victim != false) {
-                ResetPawn(victim);
-              }
-              if (currPos == 43) {
-                pawnOut[currcolor]++;
-                onboard[currpawn] = 0;
-                positions[currpawn] = 0;
-                document.getElementById(currpawn).style.visibility = "hidden";
-              }
-              CheckForWinner();
-              changePlayer();
-            }
-            num = 0;
-            clicked = false;
-            dice.style.backgroundImage = "url(/img/dice.gif)";
-          } else Stuck();
-        }
-      }
-    }
+    randomMove(Color, paw);
   });
+
+  socket.on("stuck", () => {});
 
   dice.addEventListener("click", randomNum);
 
   red1.addEventListener("click", () => {
-    socket.emit("move", "red", 1, roomid.innerHTML);
+    socket.emit("step", "red", 1, roomid.innerHTML);
   });
   red2.addEventListener("click", () => {
-    socket.emit("move", "red", 2, roomid.innerHTML);
+    socket.emit("step", "red", 2, roomid.innerHTML);
   });
   red3.addEventListener("click", () => {
-    socket.emit("move", "red", 3, roomid.innerHTML);
+    socket.emit("step", "red", 3, roomid.innerHTML);
   });
   red4.addEventListener("click", () => {
-    socket.emit("move", "red", 4, roomid.innerHTML);
+    socket.emit("step", "red", 4, roomid.innerHTML);
   });
 
   yellow1.addEventListener("click", () => {
-    socket.emit("move", "yellow", 1, roomid.innerHTML);
+    socket.emit("step", "yellow", 1, roomid.innerHTML);
   });
   yellow2.addEventListener("click", () => {
-    socket.emit("move", "yellow", 2, roomid.innerHTML);
+    socket.emit("step", "yellow", 2, roomid.innerHTML);
   });
   yellow3.addEventListener("click", () => {
-    socket.emit("move", "yellow", 2, roomid.innerHTML);
+    socket.emit("step", "yellow", 3, roomid.innerHTML);
   });
   yellow4.addEventListener("click", () => {
-    socket.emit("move", "yellow", 2, roomid.innerHTML);
+    socket.emit("step", "yellow", 4, roomid.innerHTML);
   });
 
   green1.addEventListener("click", () => {
-    socket.emit("move", "green", 1, roomid.innerHTML);
+    socket.emit("step", "green", 1, roomid.innerHTML);
   });
   green2.addEventListener("click", () => {
-    socket.emit("move", "green", 2, roomid.innerHTML);
+    socket.emit("step", "green", 2, roomid.innerHTML);
   });
   green3.addEventListener("click", () => {
-    socket.emit("move", "green", 3, roomid.innerHTML);
+    socket.emit("step", "green", 3, roomid.innerHTML);
   });
   green4.addEventListener("click", () => {
-    socket.emit("move", "green", 4, roomid.innerHTML);
+    socket.emit("step", "green", 4, roomid.innerHTML);
   });
 
   blue1.addEventListener("click", () => {
-    socket.emit("move", "blue", 1, roomid.innerHTML);
+    socket.emit("step", "blue", 1, roomid.innerHTML);
   });
   blue2.addEventListener("click", () => {
-    socket.emit("move", "blue", 2, roomid.innerHTML);
+    socket.emit("step", "blue", 2, roomid.innerHTML);
   });
   blue3.addEventListener("click", () => {
-    socket.emit("move", "blue", 3, roomid.innerHTML);
+    socket.emit("step", "blue", 3, roomid.innerHTML);
   });
   blue4.addEventListener("click", () => {
-    socket.emit("move", "blue", 4, roomid.innerHTML);
+    socket.emit("step", "blue", 4, roomid.innerHTML);
   });
 
   function HaveHover() {
@@ -244,27 +163,34 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     return false;
   }
+
   function Stuck() {
-    if (onboard[currpawn] == 0 || currPos + num > 43) {
-      if (DontHaveOtherFree() || currPos + num > 43) {
-        badtext.innerText = "Unfortunatlly you stuck";
-        clicked = false;
-        dice.style.backgroundImage = "url(/img/dice.gif)";
-        window.setTimeout(changePlayer, 1000);
-      }
+    console.log(currPos);
+    if (onboard[currpawn] == 0 || DontHaveOtherFree() || currPos + num > 43) {
+      console.log("if");
+      badtext.innerText = "Unfortunatlly you stuck";
+      clicked = false;
+      dice.style.backgroundImage = "url(/img/dice.gif)";
+      num = 0;
+      changePlayer();
     }
   }
   function changePlayer() {
+    console.log("changePlayer");
     if (num != 6) {
+      console.log(text.innerText);
       switch (text.innerText) {
         case "red":
-          text.innerText = text.style.color = "blue";
-          break;
-        case "blue":
+          console.log("red");
           text.innerText = text.style.color = "yellow";
           break;
+        case "blue":
+          text.innerText = "yellow";
+          text.style.color = "gold";
+          break;
         case "yellow":
-          text.innerText = text.style.color = "green";
+          console.log("yellow");
+          text.innerText = text.style.color = "red";
           break;
         case "green":
           text.innerText = text.style.color = "red";
@@ -272,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
     badtext.innerText = "";
-    dice.style.backgroundImage = "url(/img//dice.gif)";
+    dice.style.backgroundImage = "url(/img/dice.gif)";
   }
   var positions = {
     redpawn1: 0,
@@ -322,6 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function CheckForWinner() {
     if (pawnOut[currcolor] == 4) {
+      winnerAudio.play();
       var player = document.getElementById("player");
       var uselesstext1 = document.getElementById("uselesstext1");
       var uselesstext2 = document.getElementById("uselesstext2");
@@ -330,6 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
       uselesstext1.innerText = "";
       uselesstext2.innerText = "";
       player.innerText = "The Winner is the " + currcolor + " player";
+      socket.emit("winner", currcolor, connections);
     }
   }
   function stepDown() {
@@ -422,7 +350,9 @@ document.addEventListener("DOMContentLoaded", () => {
   pushSteps(stepLeft, stepsGreen, 4);
   pushSteps(stepUp, stepsGreen, 1);
   pushSteps(stepRight, stepsGreen, 5);
+
   function ResetPawn(victim) {
+    killAudio.play();
     onboard[victim] = 0;
     positions[victim] = 0;
     var pawnToMove = document.getElementById(victim);
@@ -496,7 +426,98 @@ document.addEventListener("DOMContentLoaded", () => {
   function randomNum() {
     socket.emit("randomNum", text.innerText, connections, roomid.innerHTML);
   }
+
   function randomMove(Color, paw) {
-    socket.emit("step", Color, paw, roomid.innerHTML);
+    console.log("step");
+    NumOfPaw = paw;
+    currcolor = Color;
+    currpawn = currcolor + "pawn" + NumOfPaw;
+    currPos = positions[currpawn];
+    console.log(
+      "num : " + num + ", currPos : " + currPos + ", add : " + (num + currPos)
+    );
+    if (num + currPos > 43) {
+      console.log(">43");
+      Stuck();
+    } else {
+      if (clicked) {
+        var position = currPos;
+        if (text.innerText == currcolor) {
+          if (onboard[currpawn] === 1 || num === 6) {
+            if (onboard[currpawn] === 0) {
+              outAudio.play();
+              var doc = document.getElementById(currpawn);
+              var curr = Number(doc.style.left.replace(/[a-z]/g, ""));
+              switch (Color) {
+                case "red":
+                  doc.style.left = 365.4 + "px";
+                  doc.style.top = 81.2 + "px";
+                  break;
+
+                case "yellow":
+                  doc.style.left = 251.72 + "px";
+                  doc.style.top = 535.92 + "px";
+                  break;
+
+                case "blue":
+                  doc.style.left = 535.92 + "px";
+                  doc.style.top = 365.4 + "px";
+                  break;
+
+                case "green":
+                  doc.style.left = 81.2 + "px";
+                  doc.style.top = 251.72 + "px";
+                  break;
+              }
+              onboard[currpawn] = 1;
+            } else {
+              moveAudio.play();
+              switch (Color) {
+                case "red":
+                  for (i = currPos; i < position + num; i++) {
+                    stepsRed[i]();
+                  }
+                  break;
+
+                case "yellow":
+                  for (i = currPos; i < position + num; i++) {
+                    stepsYellow[i]();
+                  }
+                  break;
+
+                case "blue":
+                  for (i = currPos; i < position + num; i++) {
+                    stepsBlue[i]();
+                  }
+                  break;
+
+                case "green":
+                  for (i = currPos; i < position + num; i++) {
+                    stepsGreen[i]();
+                  }
+                  break;
+              }
+              positions[currpawn] = currPos;
+              var victim = HaveHover();
+              if (victim != false) {
+                ResetPawn(victim);
+              }
+              if (currPos == 43) {
+                winAudio.play();
+                pawnOut[currcolor]++;
+                onboard[currpawn] = 0;
+                positions[currpawn] = 0;
+                document.getElementById(currpawn).style.visibility = "hidden";
+              }
+              CheckForWinner();
+              changePlayer();
+            }
+            num = 0;
+            clicked = false;
+            dice.style.backgroundImage = "url(/img/dice.gif)";
+          } else Stuck();
+        }
+      }
+    }
   }
 });

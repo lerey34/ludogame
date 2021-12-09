@@ -130,6 +130,35 @@
       <h3 id="player2" class="p2">2</h3>
       <h3 id="player3" class="p3">3</h3>
       <h3 id="player4" class="p4">4</h3>
+      <form action="/leave" method="POST">
+        <button
+          type="submit"
+          name="button"
+          class="btn login_btn"
+          id="back"
+          style="visibility: hidden"
+        >
+          Back
+        </button>
+      </form>
+      <audio id="dice_audio">
+        <source src="/sound/dice.mp3" type="audio/mpeg" />
+      </audio>
+      <audio id="kill_audio">
+        <source src="/sound/kill.mp3" type="audio/mpeg" />
+      </audio>
+      <audio id="out_audio">
+        <source src="/sound/out.mp3" type="audio/mpeg" />
+      </audio>
+      <audio id="move_audio">
+        <source src="/sound/pawn_move.mp3" type="audio/mpeg" />
+      </audio>
+      <audio id="win_audio">
+        <source src="/sound/win.mp3" type="audio/mpeg" />
+      </audio>
+      <audio id="winner_audio">
+        <source src="/sound/winner.mp3" type="audio/mpeg" />
+      </audio>
     </footer>
     <script src="/js/app.js" charset="utf-8"></script>
     <script src="/socket.io/socket.io.js"></script>
