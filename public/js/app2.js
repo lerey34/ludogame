@@ -11,18 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const yellow2 = document.getElementById("yellowpawn2");
   const yellow3 = document.getElementById("yellowpawn3");
   const yellow4 = document.getElementById("yellowpawn4");
-  const green1 = document.getElementById("greenpawn1");
-  const green2 = document.getElementById("greenpawn2");
-  const green3 = document.getElementById("greenpawn3");
-  const green4 = document.getElementById("greenpawn4");
-  const blue1 = document.getElementById("bluepawn1");
-  const blue2 = document.getElementById("bluepawn2");
-  const blue3 = document.getElementById("bluepawn3");
-  const blue4 = document.getElementById("bluepawn4");
   const player1 = document.getElementById("player1");
   const player2 = document.getElementById("player2");
-  const player3 = document.getElementById("player3");
-  const player4 = document.getElementById("player4");
   const diceAudio = document.getElementById("dice_audio");
   const killAudio = document.getElementById("kill_audio");
   const outAudio = document.getElementById("out_audio");
@@ -34,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const send = document.getElementById("send");
   const chatDiv = document.querySelector(".chat-messages");
 
-  var connections = [null, null, null, null];
+  var connections = [null, null];
   var i = 0;
 
   var currPos = 0;
@@ -44,22 +34,14 @@ document.addEventListener("DOMContentLoaded", () => {
   var num = 0;
   var clicked = false;
   var currpawn = "";
-  var allcolor = ["red", "blue", "green", "yellow"];
-  var pawnOut = { red: 0, blue: 0, green: 0, yellow: 0 };
+  var allcolor = ["red", "yellow"];
+  var pawnOut = { red: 0, yellow: 0 };
 
   var positions = {
     redpawn1: 0,
     redpawn2: 0,
     redpawn3: 0,
     redpawn4: 0,
-    bluepawn1: 0,
-    bluepawn2: 0,
-    bluepawn3: 0,
-    bluepawn4: 0,
-    greenpawn1: 0,
-    greenpawn2: 0,
-    greenpawn3: 0,
-    greenpawn4: 0,
     yellowpawn1: 0,
     yellowpawn2: 0,
     yellowpawn3: 0,
@@ -71,14 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
     redpawn2: 0,
     redpawn3: 0,
     redpawn4: 0,
-    bluepawn1: 0,
-    bluepawn2: 0,
-    bluepawn3: 0,
-    bluepawn4: 0,
-    greenpawn1: 0,
-    greenpawn2: 0,
-    greenpawn3: 0,
-    greenpawn4: 0,
     yellowpawn1: 0,
     yellowpawn2: 0,
     yellowpawn3: 0,
@@ -87,14 +61,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   var stepsRed = [];
   var stepsYellow = [];
-  var stepsBlue = [];
-  var stepsGreen = [];
 
   var socket = io();
 
   socket.on("connect", () => {
     var room = roomId.innerText;
-    socket.emit("room", room);
+    socket.emit("room2", room);
 
     socket.on("disconnect", () => {
       //eventFire(leave, "click");
@@ -110,18 +82,14 @@ document.addEventListener("DOMContentLoaded", () => {
     chatDiv.appendChild(div);
   });
 
-  socket.on("id", (id) => {
+  socket.on("id2", (id) => {
     connections[0] = id[0];
     connections[1] = id[1];
-    connections[2] = id[2];
-    connections[3] = id[3];
     player1.innerHTML = "Joueur 1 : " + connections[0];
     player2.innerHTML = "Joueur 2 : " + connections[1];
-    player3.innerHTML = "Joueur 3 : " + connections[2];
-    player4.innerHTML = "Joueur 4 : " + connections[3];
   });
 
-  socket.on("randomNum", (nums, yesno) => {
+  socket.on("randomNum2", (nums, yesno) => {
     if (yesno == "1") {
       diceAudio.play();
     }
@@ -177,16 +145,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (num != 6) {
       switch (text.innerText) {
         case "red":
-          text.innerText = text.style.color = "blue";
-          break;
-        case "blue":
           text.innerText = "yellow";
           text.style.color = "gold";
           break;
         case "yellow":
-          text.innerText = text.style.color = "green";
-          break;
-        case "green":
           text.innerText = text.style.color = "red";
           break;
       }
@@ -225,17 +187,9 @@ document.addEventListener("DOMContentLoaded", () => {
           player.style.color = "red";
           socket.emit("winner", "red", connections);
           break;
-        case "blue":
-          player.style.color = "blue";
-          socket.emit("winner", "blue", connections);
-          break;
         case "yellow":
           player.style.color = "gold";
           socket.emit("winner", "yellow", connections);
-          break;
-        case "green":
-          player.style.color = "green";
-          socket.emit("winner", "green", connections);
           break;
       }
     }
@@ -302,36 +256,6 @@ document.addEventListener("DOMContentLoaded", () => {
   pushSteps(stepLeft, stepsYellow, 1);
   pushSteps(stepUp, stepsYellow, 5);
 
-  //Blue pawns path
-  pushSteps(stepLeft, stepsBlue, 3);
-  pushSteps(stepDown, stepsBlue, 4);
-  pushSteps(stepLeft, stepsBlue, 2);
-  pushSteps(stepUp, stepsBlue, 4, 2);
-  pushSteps(stepLeft, stepsBlue, 4);
-  pushSteps(stepUp, stepsBlue, 2);
-  pushSteps(stepRight, stepsBlue, 4);
-  pushSteps(stepUp, stepsBlue, 4);
-  pushSteps(stepRight, stepsBlue, 2);
-  pushSteps(stepDown, stepsBlue, 4);
-  pushSteps(stepRight, stepsBlue, 4);
-  pushSteps(stepDown, stepsBlue, 1);
-  pushSteps(stepLeft, stepsBlue, 5);
-
-  //Green pawns path
-  pushSteps(stepRight, stepsGreen, 3);
-  pushSteps(stepUp, stepsGreen, 4);
-  pushSteps(stepRight, stepsGreen, 2);
-  pushSteps(stepDown, stepsGreen, 4);
-  pushSteps(stepRight, stepsGreen, 4);
-  pushSteps(stepDown, stepsGreen, 2);
-  pushSteps(stepLeft, stepsGreen, 4);
-  pushSteps(stepDown, stepsGreen, 4);
-  pushSteps(stepLeft, stepsGreen, 2);
-  pushSteps(stepUp, stepsGreen, 4);
-  pushSteps(stepLeft, stepsGreen, 4);
-  pushSteps(stepUp, stepsGreen, 1);
-  pushSteps(stepRight, stepsGreen, 5);
-
   function ResetPawn(victim) {
     if (document.cookie == "sound=1") {
       killAudio.play();
@@ -356,38 +280,6 @@ document.addEventListener("DOMContentLoaded", () => {
         pawnToMove.style.top = 138.04 + "px";
         pawnToMove.style.left = 479.08 + "px";
         break;
-      case "bluepawn1":
-        pawnToMove.style.top = 479.08 + "px";
-        pawnToMove.style.left = 479.08 + "px";
-        break;
-      case "bluepawn2":
-        pawnToMove.style.top = 479.08 + "px";
-        pawnToMove.style.left = 535.92 + "px";
-        break;
-      case "bluepawn3":
-        pawnToMove.style.top = 535.92 + "px";
-        pawnToMove.style.left = 535.92 + "px";
-        break;
-      case "bluepawn4":
-        pawnToMove.style.top = 535.92 + "px";
-        pawnToMove.style.left = 479.08 + "px";
-        break;
-      case "greenpawn1":
-        pawnToMove.style.top = 81.02 + "px";
-        pawnToMove.style.left = 138.04 + "px";
-        break;
-      case "greenpawn2":
-        pawnToMove.style.top = 81.02 + "px";
-        pawnToMove.style.left = 81.02 + "px";
-        break;
-      case "greenpawn3":
-        pawnToMove.style.top = 138.04 + "px";
-        pawnToMove.style.left = 81.02 + "px";
-        break;
-      case "greenpawn4":
-        pawnToMove.style.top = 138.04 + "px";
-        pawnToMove.style.left = 138.04 + "px";
-        break;
       case "yellowpawn1":
         pawnToMove.style.top = 479.8 + "px";
         pawnToMove.style.left = 138.04 + "px";
@@ -408,7 +300,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function randomNum() {
-    socket.emit("randomNum", text.innerText, connections, roomid.innerHTML);
+    socket.emit("randomNum2", text.innerText, connections, roomid.innerHTML);
   }
 
   function randomMove(Color, paw) {
@@ -439,16 +331,6 @@ document.addEventListener("DOMContentLoaded", () => {
                   doc.style.left = 251.72 + "px";
                   doc.style.top = 535.92 + "px";
                   break;
-
-                case "blue":
-                  doc.style.left = 535.92 + "px";
-                  doc.style.top = 365.4 + "px";
-                  break;
-
-                case "green":
-                  doc.style.left = 81.2 + "px";
-                  doc.style.top = 251.72 + "px";
-                  break;
               }
               onboard[currpawn] = 1;
               var victim = HaveHover();
@@ -469,18 +351,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 case "yellow":
                   for (i = currPos; i < position + num; i++) {
                     stepsYellow[i]();
-                  }
-                  break;
-
-                case "blue":
-                  for (i = currPos; i < position + num; i++) {
-                    stepsBlue[i]();
-                  }
-                  break;
-
-                case "green":
-                  for (i = currPos; i < position + num; i++) {
-                    stepsGreen[i]();
                   }
                   break;
               }
@@ -536,32 +406,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   yellow4.addEventListener("click", () => {
     socket.emit("step", "yellow", 4, roomid.innerHTML);
-  });
-
-  green1.addEventListener("click", () => {
-    socket.emit("step", "green", 1, roomid.innerHTML);
-  });
-  green2.addEventListener("click", () => {
-    socket.emit("step", "green", 2, roomid.innerHTML);
-  });
-  green3.addEventListener("click", () => {
-    socket.emit("step", "green", 3, roomid.innerHTML);
-  });
-  green4.addEventListener("click", () => {
-    socket.emit("step", "green", 4, roomid.innerHTML);
-  });
-
-  blue1.addEventListener("click", () => {
-    socket.emit("step", "blue", 1, roomid.innerHTML);
-  });
-  blue2.addEventListener("click", () => {
-    socket.emit("step", "blue", 2, roomid.innerHTML);
-  });
-  blue3.addEventListener("click", () => {
-    socket.emit("step", "blue", 3, roomid.innerHTML);
-  });
-  blue4.addEventListener("click", () => {
-    socket.emit("step", "blue", 4, roomid.innerHTML);
   });
 
   send.addEventListener("click", () => {

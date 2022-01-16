@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <title>Ludo Game</title>
+    <link rel="shortcut icon" type="image/png" href="/img/favicon.png" />
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
@@ -26,20 +27,36 @@
               <img src="/img/de.png" class="brand_logo" alt="Logo" />
             </div>
           </div>
+          <% games.forEach((game) => { %>
           <div class="d-flex justify-content-center form_container">
-            <form action="/play" method="POST">
-              <div class="input-group mb-3">
-                <h1 class="info" id="idRoom"></h1>
-              </div>
-              <div class="d-flex justify-content-center mt-3 login_container">
-                <button type="submit" name="button" class="btn login_btn">
-                  Back
-                </button>
+            <form action="/goWait2" method="post">
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control input_pass room"
+                  value="<%= game.rooms %>"
+                  name="idroom"
+                  readonly
+                />
+                <div class="input-group-append">
+                  <button type="submit" name="button" class="btn login_btn">
+                    join
+                  </button>
+                </div>
               </div>
             </form>
           </div>
+          <% }); %>
+          <form action="/play" method="post">
+            <div class="d-flex justify-content-center mt-3 login_container">
+              <button type="submit" name="button" class="btn login_btn">
+                Back
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
+    <script src="/socket.io/socket.io.js"></script>
   </body>
 </html>

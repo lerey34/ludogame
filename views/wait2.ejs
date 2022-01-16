@@ -28,21 +28,23 @@
             </div>
           </div>
           <div class="d-flex justify-content-center form_container">
-            <form action="/index" method="POST">
+            <form action="/leave" method="POST">
               <div class="input-group mb-3">
-                <h1 class="info" id="info"><%= users.username %></h1>
+                <h1 class="info" id="idRoom">Numero : <%= numRoom %></h1>
               </div>
               <div class="input-group mb-3">
-                <h4 class="info" id="info">Total win : <%= users.win %></h4>
+                <h4 class="info" id="player1">User 1 : <%= user1 %></h4>
               </div>
               <div class="input-group mb-3">
-                <h4 class="info" id="info">Total lose : <%= users.lose %></h4>
-              </div>
-              <div class="input-group mb-3">
-                <h4 class="info" id="info">Total games : <%= users.total %></h4>
+                <h4 class="info" id="player2">User 2 : <%= user2 %></h4>
               </div>
               <div class="d-flex justify-content-center mt-3 login_container">
-                <button type="submit" name="button" class="btn login_btn">
+                <button
+                  type="submit"
+                  name="button"
+                  class="btn login_btn"
+                  id="back"
+                >
                   Back
                 </button>
               </div>
@@ -51,5 +53,7 @@
         </div>
       </div>
     </div>
+    <script src="/js/wait4.js" charset="utf-8"></script>
+    <script src="/socket.io/socket.io.js"></script>
   </body>
 </html>

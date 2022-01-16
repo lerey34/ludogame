@@ -2,6 +2,13 @@
   width: 1000px;
   float: left;
 }
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 .pawns {
   background-image: url("/img/pawn.svg");
   width: 32.48px;
@@ -9,6 +16,7 @@
   border-radius: 20px;
   position: absolute;
 }
+
 #board {
   background: url(/img/board.png) no-repeat;
   background-size: cover;
@@ -18,14 +26,11 @@
   margin-top: 0px;
   margin-left: 0px;
 }
+
 #uselesstext1 {
   float: left;
   padding-left: 10px;
   padding-right: 10px;
-}
-footer {
-  font-size: larger;
-  color: darkred;
 }
 
 .p1 {
@@ -34,9 +39,68 @@ footer {
 .p2 {
   color: blue;
 }
-.p3 {
+.p3,
+.p22 {
   color: gold;
 }
 .p4 {
   color: green;
+}
+
+.chat-container {
+  width: 500px;
+  background: rgb(219, 237, 255);
+  border-radius: 10px;
+  margin: 30px auto;
+  overflow: hidden;
+}
+
+.chat-main {
+  display: grid;
+}
+
+.chat-messages {
+  height: 350px;
+  overflow-y: scroll;
+}
+
+.chat-messages .message {
+  margin-left: 10px;
+  background-color: var(--light-color);
+  border-radius: 5px;
+}
+
+.chat-messages .message {
+  font-size: 20px;
+  color: var(--dark-color-b);
+  opacity: 0.7;
+}
+
+.chat-messages .message span {
+  color: #777;
+}
+
+.chat-form-container {
+  background-color: var(--dark-color-a);
+}
+
+.chat-form-container form {
+  display: flex;
+}
+
+.chat-form-container input[type="text"] {
+  font-size: 16px;
+  padding: 5px;
+  height: 40px;
+}
+
+.chat-form-container button {
+  margin-left: 10px;
+}
+
+.inpt {
+  border: none;
+  width: 350px;
+  background-color: var(--light-color);
+  border-radius: 10px;
 }
